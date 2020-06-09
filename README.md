@@ -16,7 +16,8 @@ To simply play with application, follow the next steps:
 2. Clone the project
 
 ```
-git clone https://github.com/actionhero/actionhero-tutorial.git
+git clone https://github.com/actionhero/actionhero-tutorial.git 
+&& cd actionhero-tutorial
 ```
 
 3. Install the dependencies
