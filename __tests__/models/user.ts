@@ -1,6 +1,7 @@
-import { Process, specHelper } from "actionhero";
-import { User } from "../../src/models/User";
+import { Process } from "actionhero";
+import { User } from "./../../src/models/User";
 const actionhero = new Process();
+
 let api;
 
 describe("Model", () => {
