@@ -4,7 +4,7 @@ export const DEFAULT = {
   servers: {
     websocket: (config) => {
       return {
-        enabled: false,
+        enabled: true,
         // you can pass a FQDN (string) here or 'window.location.origin'
         clientUrl: "window.location.origin",
         // Directory to render client-side JS.
