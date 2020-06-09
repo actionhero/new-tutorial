@@ -6,7 +6,7 @@ _visit www.actionherojs.com for more information_
 
 This tutorial showcases a realistic Todo List Application with CRUD operations.
 
-To simply play with application, follow the next steps:
+To simply play around with the application, follow the next steps:
 
 1. Make sure you've the following installed on your system
     - Redis
@@ -33,9 +33,9 @@ npx sequelize-cli db:migrate
 
 5. Start Dev server and access API's at <a href="http://localhost:8080">Localhost</a>
 ```
+npm run test actions/task
 npm run dev
 ```
-
 
 
 # Tutorial
