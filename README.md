@@ -27,6 +27,10 @@ npm install
 ```
 
 4. Configure the database connection in `./src/config/sequelize.js` and run migrations.
+
+This can be done manually using Sequelize-CLI but for providing ease of use, this is done automatically
+by Actionhero when you restart the project.
+
 ```
 npx sequelize-cli db:migrate
 ```
@@ -76,6 +80,55 @@ Generate a new Actionhero project
 npx actionhero generate
 ```
 
+This generates a new project with the following directory structure. 
+We will cover most of them in this tutorial.
+
+```
+
+|
+|- src
+|  - server.ts
+|
+|  - config
+|    - (project settings)
+|
+|  - actions
+|    -- (your actions)
+|
+|  - initializers
+|    -- (any additional initializers you want)
+|
+|  - servers
+|    -- (custom servers you may make)
+|
+|  - tasks
+|    -- (your tasks)
+|
+|  - bin
+|    -- (your custom CLI commands)
+|
+|- locales
+|-- (translation files)
+|
+|- __tests__
+|-- (tests for your API)
+|
+| - log
+|-- (default location for logs)
+|
+|- node_modules
+|-- (your modules, actionhero should be npm installed in here)
+|
+|- pids
+|-- (pidfiles for your running servers)
+|
+|- public
+|-- (your static assets to be served by /file)
+|
+readme.md
+package.json
+```
+
 Install the Dependencies
 
 ```
@@ -84,7 +137,7 @@ npm install
 
 Start the server by running:
 
- `npm start` 
+ `npm run dev` 
 
  The local server will be running on http://localhost:8080
  
@@ -92,7 +145,7 @@ Start the server by running:
 
 Check the directory structure and note the following:
 
-- The preconfigured scripts are available in `bucket/package.json`
+- The preconfigured scripts are available in `./package.json`
 - The server port is configured in `src/config/servers/web.ts`.
 - In `web.ts` file you may find many server related configurations such as port, headers to send in API calls etc. A few of which we will take up in this tutorial.
 
@@ -302,7 +355,9 @@ const sequelizeConfigEnv = sequelizeConfig[process.env.NODE_ENV] || sequelizeCon
 module.exports = sequelizeConfigEnv.sequelize()
 ```
 
-This in turn makes the CLI use configuration from `src/config/sequelize.js`.
+This in turn makes the CLI use configuration from `src/config/sequelize.js`. 
+
+At this point you will need to create database manually in Postgresql before moving on to the migrations.
 
 ## Migrations
 
@@ -451,9 +506,12 @@ describe("Model", () => {
 
 ```
 
-This code is self explanatory but for further clarity the above test checks if a new goal gets created in the database with the required properties.
+This code tests if a new goal gets created in the database with the required properties.
+You can further enhance Model testing with various DB checks such as Title cannot be a number etc.
 
-```npm run test models/goal``` 
+```
+npm run test models/goal
+``` 
 
 Run the above  to test the newly created model.
 

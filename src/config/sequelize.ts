@@ -6,9 +6,9 @@ const DEFAULT = {
     let dialect = "postgres";
     let host = "127.0.0.1";
     let port = "5432";
-    let database = "ahtodotutorial";
-    let username = "ymmy";
-    let password = "";
+    let database = "";
+    let username = undefined;
+    let password = undefined;
 
     // if your environment provides database information via a single JDBC-style URL like mysql://username:password@hostname:port/default_schema
     if (process.env.DATABASE_URL) {
