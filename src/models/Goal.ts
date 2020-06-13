@@ -7,11 +7,11 @@ import {
 } from "sequelize-typescript";
 import * as uuid from "uuid";
 
-@Table({ tableName: "tasks", timestamps: false, paranoid: false })
-export class Task extends Model<Task> {
+@Table({ tableName: "goals", timestamps: true })
+export class Goal extends Model<Goal> {
   @PrimaryKey
   @Column
-  guid: string;
+  id: string;
 
   @Column
   title: string;
@@ -20,9 +20,9 @@ export class Task extends Model<Task> {
   done: boolean;
 
   @BeforeCreate
-  static generateGuid(instance) {
-    if (!instance.guid) {
-      instance.guid = uuid.v4();
+  static generateId(instance) {
+    if (!instance.id) {
+      instance.id = uuid.v4();
     }
   }
 }

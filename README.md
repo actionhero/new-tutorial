@@ -4,7 +4,7 @@
 
 _visit www.actionherojs.com for more information_
 
-This tutorial showcases a realistic Todo List Application with CRUD operations.
+This tutorial showcases a realistic Bucket List Application with CRUD operations.
 
 To simply play around with the application, follow the next steps:
 
@@ -33,7 +33,7 @@ npx sequelize-cli db:migrate
 
 5. Start Dev server and access API's at <a href="http://localhost:8080">Localhost</a>
 ```
-npm run test actions/task
+npm run test actions/goal
 npm run dev
 ```
 
@@ -49,7 +49,7 @@ By the end of this tutorial you will become comfortable with the following piece
 - Plugins
 - Testing
 
-We will be building a Todo List Web App which will cover all the basics to get started with Actionhero.
+We will be building a Bucket List Web App which will cover all the basics to get started with Actionhero.
 
 <br>
 
@@ -67,7 +67,7 @@ We will be building a Todo List Web App which will cover all the basics to get s
 ### Create a project directory:
 
 ```
-mkdir todo && cd todo
+mkdir bucket && cd bucket
 ```
 
 Generate a new Actionhero project
@@ -92,7 +92,7 @@ Start the server by running:
 
 Check the directory structure and note the following:
 
-- The preconfigured scripts are available in `todo/package.json`
+- The preconfigured scripts are available in `bucket/package.json`
 - The server port is configured in `src/config/servers/web.ts`.
 - In `web.ts` file you may find many server related configurations such as port, headers to send in API calls etc. A few of which we will take up in this tutorial.
 
@@ -140,7 +140,7 @@ _This is a pre-configured status action available via the `/api/status` endpoint
 
 ## Database Setup
 
-For our Todo List tutorial we will need a database. We will use Postgresql for the same. 
+For our Bucket List tutorial we will need a database. We will use Postgresql for the same. 
 Since Actionhero is quite modular in nature, there are plugins for support.
 
 We will be using Sequelize which is Node.js ORM for Postgres, MySQL, MariaDB, SQLite and Microsoft SQL server.
@@ -326,8 +326,8 @@ This will create a migration file as `src/migrations/<timestamp>-migration-skele
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("tasks", {
-      guid: {
+    await queryInterface.createTable("goals", {
+      id: {
         type: Sequelize.DataTypes.UUID,
         defaultValue: Sequelize.DataTypes.UUIDV4,
         primaryKey: true,
@@ -345,16 +345,16 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("tasks");
+    await queryInterface.dropTable("goals");
   }
 };
 ```
 
-The above asks Sequelize to create a table `tasks`.
+The above asks Sequelize to create a table `goals`.
 
-To imagine what we just did look at a `tasks` table which can be created using above code.
+To imagine what we just did look at a `goals` table which can be created using above code.
 
-| guid           | title              | done |
+| id           | title              | done |
 | ---------------| -------------------|------|
 | 235b6988-78..  | Watch NodeConf EU  | true |
 | a37e3990-41..  | Build Rome         | false|  
@@ -366,15 +366,15 @@ To imagine what we just did look at a `tasks` table which can be created using a
 npx sequelize-cli db:migrate
 ```
 
-The above will create a table called `tasks` in the configured database.
+The above will create a table called `goals` in the configured database.
 
 ### Model
 
 Since we have the tables in database now created, lets write the code which represents and connects to the corresponding table.
 
-Create a Model `Task.ts` in `src/models/` directory with the following code.
+Create a Model `Goal.ts` in `src/models/` directory with the following code.
 
-`Task.ts`
+`Goal.ts`
 
 ```
 import {
@@ -386,11 +386,11 @@ import {
   } from "sequelize-typescript";
   import * as uuid from "uuid";
   
-  @Table({ tableName: "tasks", timestamps: false, paranoid: false })
-  export class Task extends Model<Task> {
+  @Table({ tableName: "goals", timestamps: false, paranoid: false })
+  export class Goal extends Model<Goal> {
     @PrimaryKey
     @Column
-    guid: string;
+    id: string;
   
     @Column
     title: string;
@@ -400,30 +400,30 @@ import {
   
     @BeforeCreate
     static generateGuid(instance) {
-      if (!instance.guid) {
-        instance.guid = uuid.v4();
+      if (!instance.id) {
+        instance.id = uuid.v4();
       }
     }
   }
   ```
 
-In the above Model, Column decorator defines the columns of table ie `guid`, `title`, `done`. The generateGuid static function makes sure to generate a guid for the task before creating a new one.
+In the above Model, Column decorator defines the columns of table ie `id`, `title`, `done`. The generateGuid static function makes sure to generate a guid for the goal before creating a new one.
 
 ### Testing
 
 Now that we have created our first model, lets start testing the functionality.
 
-In the `__tests__/models` directory create a file called `task.ts` and add the following code:
+In the `__tests__/models` directory create a file called `goal.ts` and add the following code:
 
 ```
 import { Process } from "actionhero";
-import { Task } from "../../src/models/Task";
+import { Goal } from "../../src/models/Goal";
 const actionhero = new Process();
 
 let api;
 
 describe("Model", () => {
-  describe("task", () => {
+  describe("goal", () => {
     beforeAll(async () => {
       api = await actionhero.start();
     });
@@ -433,27 +433,27 @@ describe("Model", () => {
     });
 
     beforeAll(async () => {
-      Task.destroy({ truncate: true });
+      Goal.destroy({ truncate: true });
     });
 
-    test("New Task gets created", async () => {
-      const task = await Task.create({
-        title: "Test Task",
+    test("New Goal gets created", async () => {
+      const goal = await Goal.create({
+        title: "Test Goal",
       });
-      expect(task).toHaveProperty("title");
-      expect(task).toHaveProperty("guid");
-      expect(task).toHaveProperty("done");
-      expect(task.title).toBe("Test Task");
-      expect(task.done).toBe(false);
+      expect(goal).toHaveProperty("title");
+      expect(goal).toHaveProperty("id");
+      expect(goal).toHaveProperty("done");
+      expect(goal.title).toBe("Test Goal");
+      expect(goal.done).toBe(false);
     });
   });
 });
 
 ```
 
-This code is self explanatory but for further clarity the above test checks if a new task gets created in the database with the required properties.
+This code is self explanatory but for further clarity the above test checks if a new goal gets created in the database with the required properties.
 
-```npm run test models/task``` 
+```npm run test models/goal``` 
 
 Run the above  to test the newly created model.
 
@@ -462,16 +462,16 @@ Run the above  to test the newly created model.
 Actions are the core of the Actionhero framework. These are the basic units of work within every connection type.
 We shall now make a connection for our basic CRUD operations.
 
-Create a file called `task.ts` in `src/actions` directory.
+Create a file called `goal.ts` in `src/actions` directory.
 
 
 
-### GetTask Action
+### GetGoal Action
 
-This action is for fetching details of a task with it's particular guid.
+This action is for fetching details of a goal with it's particular id.
 
 ```
-export class GetTask extends Action
+export class GetGoal extends Action
 ```
 
 This involves a constructor, which has certain attributes which can be defined for every Action.
@@ -480,10 +480,10 @@ This involves a constructor, which has certain attributes which can be defined f
 ```
   constructor() {
     super();
-    this.name = "task:get";
-    this.description = "Get a Task using GUID as taskId";
+    this.name = "goal:get";
+    this.description = "Get a Goal using GUID as id";
     this.inputs = {
-      taskId: {
+      id: {
         required: true,
       },
     };
@@ -492,11 +492,11 @@ This involves a constructor, which has certain attributes which can be defined f
 
 These are generic attributes such as name of action (this is important and we will use it in next section).
 Next is a description about the action.
-And last one is the inputs which may or may not be added to the request for action. Here since we're requesting the details of a particular task, it is required.
+And last one is the inputs which may or may not be added to the request for action. Here since we're requesting the details of a particular goal, it is required.
 
 ```
 this.inputs = {
-      taskId: {
+      id: {
         required: true,
       },
     };
@@ -507,45 +507,45 @@ Next part is the action itself.
 
 ```
   async run({ connection, response }) {
-    const taskId = connection.params.taskId;
-    const task = await Task.findOne({ where: { guid: taskId } });
-    if (!task) {
-      throw new Error(`Task does not exist with taskId: ${taskId}`);
+    const id = connection.params.id;
+    const goal = await Goal.findOne({ where: { id: id } });
+    if (!goal) {
+      throw new Error(`Goal does not exist with id: ${id}`);
     }
-    response.task = task;
+    response.goal = goal;
   }
 }
 ```
 
 The fetching of details from database makes it an async action. This involves essentially just 4 lines of code.
 
-1. Fetching the input param of taskId
-2. Fetching the details from the database using the particular Task model.
-3. Throwing error if the task does not exist.
-4. Assigning the task as an attribute to the `response` object of action itself.
+1. Fetching the input param of id
+2. Fetching the details from the database using the particular Goal model.
+3. Throwing error if the goal does not exist.
+4. Assigning the goal as an attribute to the `response` object of action itself.
 
-_Similarly there are *ListTasks*, *CreateTask*, *UpdateTask* and *DeleteTask* present in the same `actions/task.ts` files in the demo project_
+_Similarly there are *ListGoals*, *CreateGoal*, *UpdateGoal* and *DeleteGoal* present in the same `actions/goal.ts` files in the demo project_
 
 ## Routing
 
 The Actions are now complete but to access them we need to define particular routes for each action.
 This is done via the `src/config/routes.ts` file.
 
-Since `GetTask` should ideally be a GET action, it can be added in the `routes.ts` file as below:
+Since `GetGoal` should ideally be a GET action, it can be added in the `routes.ts` file as below:
 
 ```
 get: [
-    { path: "/tasks/:taskId", action: "task:get" },
+    { path: "/goals/:id", action: "goal:get" },
 ],
 ```
 
 The resulting path to run would be 
 ```
-http://localhost:8080/api/tasks/<taskId>
+http://localhost:8080/api/goals/<id>
 ```
-and the action refers to the Action name which we had given in GetTask at 
+and the action refers to the Action name which we had given in GetGoal at 
 
-`this.name = "task:get"`.
+`this.name = "goal:get"`.
 
 <br/>
 
@@ -559,12 +559,12 @@ urlPathForActions: "api"
 
 ## Testing
 
-To finally test the whole application let's create a basic test at `__tests__/task.ts`
+To finally test the whole application let's create a basic test at `__tests__/goal.ts`
 
-First lets set up the Get Task Test. It has 2 simple parts involving starting of api before everything and stopping it after every test has been executed.
+First lets set up the Get Goal Test. It has 2 simple parts involving starting of api before everything and stopping it after every test has been executed.
 ```
 describe("Action", () => {
-  describe("Get Task", () => {
+  describe("Get Goal", () => {
     beforeAll(async () => {
       api = await actionhero.start();
     });
@@ -575,44 +575,44 @@ describe("Action", () => {
 ...
 ```
 
-Let's create a test for basic fail condition if the task does not exist:
+Let's create a test for basic fail condition if the goal does not exist:
 
 ```
- test("Should throw an error when task with taskId does not exist",   
+ test("Should throw an error when goal with id does not exist",   
     async () => {
-      const taskId = "5ab0c467-eb53-4288-9390-51f4d5f1f211";
-      const response = await specHelper.runAction("task:get", {
-        taskId: taskId,
+      const id = "5ab0c467-eb53-4288-9390-51f4d5f1f211";
+      const response = await specHelper.runAction("goal:get", {
+        id: id,
       });
       expect(response.error).toBeTruthy();
       expect(response.error).toBe(
-        `Error: Task does not exist with taskId: ${taskId}`
+        `Error: Goal does not exist with id: ${id}`
       );
  });
 ```
 
-And a test to check that the correct task is fetched:
+And a test to check that the correct goal is fetched:
 
 ```
-test("Should response with task object when task with passed GUID exists", async () => {
-      const newTaskTitle = "Cure Cancer";
-      const { taskId } = await specHelper.runAction("task:create", {
-        title: newTaskTitle,
+test("Should response with goal object when goal with passed GUID exists", async () => {
+      const newGoalTitle = "Cure Cancer";
+      const { id } = await specHelper.runAction("goal:create", {
+        title: newGoalTitle,
       });
-      expect(taskId).toBeTruthy();
-      const response = await specHelper.runAction("task:get", {
-        taskId: taskId,
+      expect(id).toBeTruthy();
+      const response = await specHelper.runAction("goal:get", {
+        id: id,
       });
-      expect(response.task).toBeTruthy();
+      expect(response.goal).toBeTruthy();
       expect(response.error).toBeFalsy();
-      expect(response.task.guid).toBe(taskId);
+      expect(response.goal.id).toBe(id);
     });
   });
 ```
 
-To test the actions in `task.ts`
+To test the actions in `goal.ts`
 ```
-npm run test actions/task
+npm run test actions/goal
 ```
 
 ```
@@ -626,6 +626,6 @@ Success all tests are passing!
 
 ## Conclusion
 
-We've completed a basic `Todo Lists` Application and the code is available in the demo project.
+We've completed a basic `Bucket Lists` Application and the code is available in the demo project.
 
 

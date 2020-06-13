@@ -2,12 +2,12 @@ export const DEFAULT = {
   routes: (config) => {
     return {
       get: [
-        { path: "/tasks", action: "task:list" },
-        { path: "/tasks/:taskId", action: "task:get" },
+        { path: "/goals", action: "goal:list" },
+        { path: "/goals/:id", action: "goal:get" },
       ],
-      post: [{ path: "/tasks", action: "task:create" }],
-      patch: [{ path: "/tasks/:taskId", action: "task:update" }],
-      delete: [{ path: "/tasks/:taskId", action: "task:delete" }],
+      post: [{ path: "/goals", action: "goal:create" }],
+      patch: [{ path: "/goals/:id", action: "goal:update" }],
+      delete: [{ path: "/goals/:id", action: "goal:delete" }],
     };
   },
 };

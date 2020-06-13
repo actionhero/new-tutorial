@@ -1,47 +1,47 @@
 import { Action } from "actionhero";
-import { Task } from "../models/Task";
+import { Goal } from "../models/Goal";
 
-export class GetTask extends Action {
+export class GetGoal extends Action {
   constructor() {
     super();
-    this.name = "task:get";
-    this.description = "Get a Task using GUID as taskId";
+    this.name = "goal:get";
+    this.description = "Get a Goal using GUID as id";
     this.inputs = {
-      taskId: {
+      id: {
         required: true,
       },
     };
   }
 
   async run({ connection, response }) {
-    const taskId = connection.params.taskId;
-    const task = await Task.findOne({ where: { guid: taskId } });
-    if (!task) {
-      throw new Error(`Task does not exist with taskId: ${taskId}`);
+    const id = connection.params.id;
+    const goal = await Goal.findOne({ where: { id: id } });
+    if (!goal) {
+      throw new Error(`Goal does not exist with id: ${id}`);
     }
-    response.task = task;
+    response.goal = goal;
   }
 }
 
-export class ListTasks extends Action {
+export class ListGoals extends Action {
   constructor() {
     super();
-    this.name = "task:list";
-    this.description = "List the tasks";
+    this.name = "goal:list";
+    this.description = "List the goals";
     this.outputExample = {};
   }
 
   async run({ params, response }) {
-    const tasks = await Task.findAll();
-    response.tasks = tasks;
+    const goals = await Goal.findAll();
+    response.goals = goals;
   }
 }
 
-export class CreateTask extends Action {
+export class CreateGoal extends Action {
   constructor() {
     super();
-    this.name = "task:create";
-    this.description = "Create a task";
+    this.name = "goal:create";
+    this.description = "Create a goal";
     this.inputs = {
       title: {
         required: true,
@@ -57,16 +57,16 @@ export class CreateTask extends Action {
   }
 
   async run({ params, response }) {
-    const task = await Task.create(params);
-    response.taskId = task.guid;
+    const goal = await Goal.create(params);
+    response.id = goal.id;
   }
 }
 
-export class UpdateTask extends Action {
+export class UpdateGoal extends Action {
   constructor() {
     super();
-    this.name = "task:update";
-    this.description = "Update a task";
+    this.name = "goal:update";
+    this.description = "Update a goal";
     this.inputs = {
       title: {
         required: false,
@@ -95,46 +95,43 @@ export class UpdateTask extends Action {
     // Why is connection required, then why not use connection.params everywhere?
     const newTitle = params.title;
     const newDoneStatus = params.done;
-    console.log(params);
     if (!newTitle && newDoneStatus === undefined) {
       throw new Error("No update needed");
     }
-    const [numberOfUpdatedRows, tasks] = await Task.update(
+    const [numberOfUpdatedRows, goals] = await Goal.update(
       { title: newTitle, done: newDoneStatus },
       {
         where: {
-          guid: connection.params.taskId,
+          id: connection.params.id,
         },
         returning: true,
       }
     );
     if (numberOfUpdatedRows < 1) {
-      throw new Error(`No such task exists`);
+      throw new Error(`No such goal exists`);
     }
-    response.task = tasks[0];
+    response.goal = goals[0];
   }
 }
 
-export class DeleteAction extends Action {
+export class DeleteGoal extends Action {
   constructor() {
     super();
-    this.name = "task:delete";
-    this.description = "Delete a Task";
+    this.name = "goal:delete";
+    this.description = "Delete a Goal";
   }
 
   async run({ connection, response }) {
-    const deleteRowCount = await Task.destroy({
+    const deleteRowCount = await Goal.destroy({
       where: {
-        guid: connection.params.taskId,
+        id: connection.params.id,
       },
     });
 
     if (deleteRowCount < 1) {
-      throw new Error(
-        `No such task exists with taskId ${connection.params.taskId}`
-      );
+      throw new Error(`No such goal exists with id ${connection.params.id}`);
     }
 
-    response.message = "Task Deleted Successfully";
+    response.message = "Goal Deleted Successfully";
   }
 }

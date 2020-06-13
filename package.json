@@ -1,7 +1,7 @@
 {
-  "author": "YOU <YOU@example.com>",
-  "name": "my_actionhero_project",
-  "description": "my actionhero project",
+  "author": "Yatin <iamyatin@gmail.com>",
+  "name": "bucket-list",
+  "description": "Tutorial project for Bucket List",
   "version": "0.1.0",
   "engines": {
     "node": ">=14.0.0"
