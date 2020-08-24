@@ -10,7 +10,7 @@
     "@types/bluebird": "^3.5.32",
     "@types/validator": "^13.0.0",
     "actionhero": "23.0.7",
-    "ah-sequelize-plugin": "^2.1.2",
+    "ah-sequelize-plugin": "^2.2.2",
     "bcrypt": "^5.0.0",
     "ioredis": "latest",
     "mysql2": "^2.1.0",
